@@ -3,15 +3,20 @@ version: "3"
 services:
   micro_codeflix_app:
     container_name: micro_codeflix_app
-    build: .
-    entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://micro_codeflix_db:3306 -timeout 40s ./.docker/entrypoint.sh
+    build:
+      dockerfile: .docker/app/Dockerfile
+      context: .
+      target: dev
+    entrypoint: dockerize -template /templates/.env:.env -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
     environment:
       - _DB_HOST=micro_codeflix_db
       - _DB_DATABASE=micro_codeflix_videos
       - _DB_USERNAME=root
       - _DB_PASSWORD=root
     volumes:
-      - .:/var/www
+      - ./www:/var/www
+    ports:
+      - 9000:9000
     networks:
       - micro-codeflix-net
     depends_on:
@@ -26,7 +31,7 @@ services:
     ports:
       - 8000:80
     volumes:
-      - .:/var/www
+      - ./www:/var/www
     networks:
       - micro-codeflix-net
     depends_on:

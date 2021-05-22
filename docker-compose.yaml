@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  micro_codeflix_app:
+    container_name: micro_codeflix_app
+    build: .
+    entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://micro_codeflix_db:3306 -timeout 40s ./.docker/entrypoint.sh
+    environment:
+      - _DB_HOST=micro_codeflix_db
+      - _DB_DATABASE=micro_codeflix_videos
+      - _DB_USERNAME=root
+      - _DB_PASSWORD=root
+    volumes:
+      - .:/var/www
+    networks:
+      - micro-codeflix-net
+    depends_on:
+      - micro_codeflix_db
+      - micro_codeflix_redis
+
+  micro_codeflix_nginx:
+    build: .docker/nginx
+    container_name: micro_codeflix_nginx
+    restart: always
+    tty: true
+    ports:
+      - 8000:80
+    volumes:
+      - .:/var/www
+    networks:
+      - micro-codeflix-net
+    depends_on:
+      - micro_codeflix_app
+
+  micro_codeflix_db:
+    build: .docker/mysql
+    container_name: micro_codeflix_db
+    restart: always
+    tty: true
+    ports:
+      - 3306:3306
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=micro_codeflix_videos
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - micro-codeflix-net
+
+  micro_codeflix_redis:
+    image: redis:alpine
+    container_name: micro_codeflix_redis
+    expose:
+      - 6379
+    networks:
+      - micro-codeflix-net
+
+networks:
+  micro-codeflix-net:
+    driver: bridge

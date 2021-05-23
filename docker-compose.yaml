@@ -43,7 +43,7 @@ services:
     restart: always
     tty: true
     ports:
-      - 3306:3306
+      - 33060:3306
     volumes:
       - ./.docker/dbdata:/var/lib/mysql
     environment:

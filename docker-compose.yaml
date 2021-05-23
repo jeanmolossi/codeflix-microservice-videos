@@ -41,6 +41,7 @@ services:
   micro_codeflix_db:
     build: .docker/mysql
     container_name: micro_codeflix_db
+    command: --innodb-use-native-aio=0
     restart: always
     tty: true
     ports:

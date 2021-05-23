@@ -39,6 +39,7 @@ services:
 
   micro_codeflix_db:
     build: .docker/mysql
+    command: --innodb-use-native-aio=0
     container_name: micro_codeflix_db
     restart: always
     tty: true
@@ -46,6 +47,7 @@ services:
       - 33060:3306
     volumes:
       - ./.docker/dbdata:/var/lib/mysql
+      - ./.docker/mysql:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_DATABASE=micro_codeflix_videos
       - MYSQL_ROOT_PASSWORD=root

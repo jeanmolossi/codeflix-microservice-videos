@@ -14,6 +14,10 @@ Após isso você precisa clonar o repositório com:
 
 `git clone https://github.com/jeanmolossi/codeflix-microservice-videos.git`
 
-E em seguida:'
+E em seguida:
 
 `docker-compose up -d`
+
+O serviço está configurado para subir utilizando o nginx na porta 8000, portanto espera-se que você consiga acesso aos endpoints em:
+
+`http://localhost:8000`

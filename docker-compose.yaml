@@ -7,10 +7,11 @@ services:
       dockerfile: .docker/app/Dockerfile
       context: .
       target: dev
-    entrypoint: dockerize -template /templates/.env:.env -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
+    entrypoint: dockerize -template /templates/.env:.env -template /templates/.env.testing:.env.testing -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
     environment:
       - _DB_HOST=micro_codeflix_db
       - _DB_DATABASE=micro_codeflix_videos
+      - _DB_DATABASE_TEST=micro_codeflix_videos_test
       - _DB_USERNAME=root
       - _DB_PASSWORD=root
     volumes:
@@ -39,7 +40,6 @@ services:
 
   micro_codeflix_db:
     build: .docker/mysql
-    command: --innodb-use-native-aio=0
     container_name: micro_codeflix_db
     restart: always
     tty: true

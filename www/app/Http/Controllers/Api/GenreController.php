@@ -34,7 +34,9 @@ class GenreController extends Controller
     {
         $this->validate($request, $this->rules);
 
-        return $genre->update($request->all());
+        $genre->update($request->all());
+
+        return $genre;
     }
 
     public function destroy(Genre $genre)

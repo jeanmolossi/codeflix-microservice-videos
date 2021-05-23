@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Uuid as TraitsUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory,
+        SoftDeletes,
+        TraitsUuid;
 
     protected $fillable = [
         'name',
@@ -18,4 +20,8 @@ class Category extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    protected $casts = [
+        'id' => 'string'
+    ];
 }

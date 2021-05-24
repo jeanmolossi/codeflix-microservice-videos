@@ -50,7 +50,7 @@ services:
       - ./.docker/dbdata:/var/lib/mysql
       - ./.docker/mysql:/docker-entrypoint-initdb.d
     environment:
-      - MYSQL_DATABASE=micro_codeflix_videos
+      - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=root
     networks:
       - micro-codeflix-net

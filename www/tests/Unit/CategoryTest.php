@@ -10,11 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CategoryTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
+
     public function test_fillableAttributes()
     {
         $fillable = ['name', 'description', 'is_active'];

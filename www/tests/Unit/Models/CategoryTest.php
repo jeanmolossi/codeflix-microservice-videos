@@ -19,7 +19,7 @@ class CategoryTest extends TestCase
         $this->category = new Category();
     }
 
-    public function test_fillableAttributes()
+    public function test_FillableAttributes()
     {
 
         $fillable = ['name', 'description', 'is_active'];
@@ -30,7 +30,7 @@ class CategoryTest extends TestCase
         );
     }
 
-    public function test_ifUseTraits()
+    public function test_IfUseTraits()
     {
         $traits = [
             HasFactory::class,
@@ -46,7 +46,7 @@ class CategoryTest extends TestCase
         );
     }
 
-    public function test_datesAttributes()
+    public function test_DatesAttributes()
     {
         $dates = ['deleted_at', 'created_at', 'updated_at'];
 
@@ -59,17 +59,18 @@ class CategoryTest extends TestCase
         $this->assertCount(count($dates), $categoryDates);
     }
 
-    public function test_casts()
+    public function test_Casts()
     {
         $casts = [
             'id' => 'string',
+            'is_active' => 'boolean',
             'deleted_at' => 'datetime'
         ];
 
         $this->assertEquals($casts, $this->category->getCasts());
     }
 
-    public function test_incrementing()
+    public function test_Incrementing()
     {
         $this->assertFalse($this->category->getIncrementing());
     }

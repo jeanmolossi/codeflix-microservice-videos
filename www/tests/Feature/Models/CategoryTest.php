@@ -3,13 +3,12 @@
 namespace Tests\Feature\Models;
 
 use App\Models\Category;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CategoryTest extends TestCase {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     public function test_List() {
         Category::factory(1)->create();
@@ -81,5 +80,18 @@ class CategoryTest extends TestCase {
         foreach ($data as $key => $value) {
             $this->assertEquals($value, $category->{$key});
         }
+    }
+
+    public function test_Delete() {
+        /** @var Category $category */
+        $category = Category::factory()->create();
+
+        $category->delete();
+
+        $this->assertNull(Category::find($category->id));
+
+        $category->restore();
+
+        $this->assertNotNull(Category::find($category->id));
     }
 }

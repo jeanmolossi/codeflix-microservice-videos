@@ -6,7 +6,6 @@ services:
     build:
       dockerfile: .docker/app/Dockerfile
       context: .
-      target: dev
     entrypoint: dockerize -template /templates/.env:.env -template /templates/.env.testing:.env.testing -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
     environment:
       - _DB_HOST=micro_codeflix_db

@@ -7,7 +7,7 @@ services:
       dockerfile: .docker/app/Dockerfile
       context: .
     #templates folder exists inside container only -- look at ./.docker/app/Dockerfile
-    entrypoint: dockerize -template /templates/.env:.env -template /templates/.env.testing:.env.testing -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
+    entrypoint: dockerize -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
     environment:
       - _DB_HOST=micro_codeflix_db
       - _DB_DATABASE=micro_codeflix_videos

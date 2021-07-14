@@ -8,12 +8,6 @@ services:
       context: .
     #templates folder exists inside container only -- look at ./.docker/app/Dockerfile
     entrypoint: dockerize -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
-    environment:
-      - _DB_HOST=micro_codeflix_db
-      - _DB_DATABASE=micro_codeflix_videos
-      - _DB_DATABASE_TEST=micro_codeflix_videos_test
-      - _DB_USERNAME=root
-      - _DB_PASSWORD=root
     volumes:
       - ./www:/var/www
     ports:

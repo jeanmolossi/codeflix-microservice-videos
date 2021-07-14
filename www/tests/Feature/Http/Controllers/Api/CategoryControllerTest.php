@@ -5,12 +5,12 @@ namespace Tests\Feature\Http\Controllers\Api;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
-use Lang;
 use Tests\TestCase;
+use Tests\Traits\TestValidations;
 
 class CategoryControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, TestValidations;
 
     public function test_Index() {
         $category = Category::factory()->create();
@@ -23,6 +23,7 @@ class CategoryControllerTest extends TestCase
     }
 
     public function test_Show() {
+        /** @var Category $category */
         $category = Category::factory()->create();
 
         $response = $this->get(route('categories.show', ['category' => $category->id]));
@@ -79,31 +80,18 @@ class CategoryControllerTest extends TestCase
     }
 
     protected function assertInvalidationRequired(TestResponse $response) {
+        $this->assertInvalidationFields($response, ['name'], 'required' );
+
         $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(["name"])
-            ->assertJsonMissingValidationErrors(["is_active"])
-            ->assertJsonFragment([
-                Lang::get('validation.required', ['attribute' => 'name'])
-            ]);
+            ->assertJsonMissingValidationErrors(["is_active"]);
     }
 
     protected function assertInvalidationMax(TestResponse $response) {
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(["name"])
-            ->assertJsonFragment([
-                Lang::get('validation.max.string', ['attribute' => 'name', 'max' => 255])
-            ]);
+        $this->assertInvalidationFields($response, ['name'], 'max.string', ['max' => 255]);
     }
 
     protected function assertInvalidationBoolean(TestResponse $response) {
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(["is_active"])
-            ->assertJsonFragment([
-                Lang::get('validation.boolean', ['attribute' => 'is active'])
-            ]);
+        $this->assertInvalidationFields($response, ['is_active'], 'boolean');
     }
 
     public function test_Store() {
@@ -115,6 +103,7 @@ class CategoryControllerTest extends TestCase
 
         $id = $response->json('id');
 
+        /** @var Category $category */
         $category = Category::find($id);
 
         $response
@@ -143,6 +132,7 @@ class CategoryControllerTest extends TestCase
     }
 
     public function test_Update() {
+        /** @var Category $category */
         $category = Category::factory()->create([
             'description' => 'Has description',
             'is_active' => false

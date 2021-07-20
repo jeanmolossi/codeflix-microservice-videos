@@ -2,11 +2,17 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\VideoController;
+use App\Models\Category;
+use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Mockery;
 use Tests\TestCase;
 use Tests\Traits\TestSaves;
 use Tests\Traits\TestValidations;
+use Tests\Exceptions\TestException;
 
 class VideoControllerTest extends TestCase {
     use RefreshDatabase, TestValidations, TestSaves;
@@ -18,14 +24,16 @@ class VideoControllerTest extends TestCase {
     protected function setUp(): void {
         parent::setUp();
 
-        $this->video = Video::factory()->create();
+        $this->video = Video::factory()->create(['opened' => false]);
 
         $this->sendData = [
             'title' => 'title_test',
             'description' => 'description_test',
             'year_launched' => 2010,
             'rating' => Video::RATING_LIST[0],
-            'duration' => 90
+            'duration' => 90,
+            'categories_id' => [],
+            'genres_id' => [],
         ];
     }
 
@@ -95,18 +103,50 @@ class VideoControllerTest extends TestCase {
         $this->assertInvalidationInUpdateAction($data, 'in');
     }
 
+    public function test_InvalidationCategoriesIdField() {
+        $data = ['categories_id' => 'a'];
+
+        $this->assertInvalidationInStoreAction($data, 'array');
+        $this->assertInvalidationInUpdateAction($data, 'array');
+
+        $data = ['categories_id' => [0]];
+
+        $this->assertInvalidationInStoreAction($data, 'exists');
+        $this->assertInvalidationInUpdateAction($data, 'exists');
+    }
+
+    public function test_InvalidationGenresIdField() {
+        $data = ['genres_id' => 'a'];
+
+        $this->assertInvalidationInStoreAction($data, 'array');
+        $this->assertInvalidationInUpdateAction($data, 'array');
+
+        $data = ['genres_id' => [0]];
+
+        $this->assertInvalidationInStoreAction($data, 'exists');
+        $this->assertInvalidationInUpdateAction($data, 'exists');
+    }
+
     public function test_Saves() {
+        $categoryId = Category::factory()->create()->id;
+        $genreId = Genre::factory()->create()->id;
+
+        $relations = [
+            'categories_id' => [$categoryId],
+            'genres_id' => [$genreId]
+        ];
+
         $data = [
             [
-                'send_data' => $this->sendData,
+                'send_data' => $this->sendData + $relations,
                 'test_data' => $this->sendData + ['opened' => false]
             ],
             [
-                'send_data' => $this->sendData + ['opened' => true],
+                'send_data' => $this->sendData + ['opened' => true] + $relations,
                 'test_data' => $this->sendData + ['opened' => true]
             ],
             [
-                'send_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]],
+                'send_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]] + $relations,
                 'test_data' => $this->sendData + ['rating' => Video::RATING_LIST[1]]
             ]
         ];
@@ -126,6 +166,36 @@ class VideoControllerTest extends TestCase {
 
             $response->assertJsonStructure(['created_at', 'updated_at']);
         }
+    }
+
+    public function test_RollbackStore() {
+        $controller = Mockery::mock(VideoController::class)
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods();
+
+        $controller->shouldReceive('validate')
+            ->withAnyArgs()
+            ->andReturn($this->sendData);
+
+        $controller->shouldReceive('rulesStore')
+            ->withAnyArgs()
+            ->andReturn([]);
+
+        $controller->shouldReceive('handleRelations')
+            ->once()
+            ->andThrow(new TestException());
+
+        $request = Mockery::mock(Request::class);
+
+        $hasError = false;
+        try {
+            $controller->store($request);
+        } catch (TestException $e) {
+            $this->assertCount(1, Video::all());
+            $hasError = true;
+        }
+
+        $this->assertTrue($hasError);
     }
 
     public function test_Destroy() {

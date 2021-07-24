@@ -35,11 +35,11 @@ class Video extends Model {
     public $incrementing = false;
 
     public function categories(): BelongsToMany {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class)->withTrashed();
     }
 
     public function genres(): BelongsToMany {
-        return $this->belongsToMany(Genre::class);
+        return $this->belongsToMany(Genre::class)->withTrashed();
     }
 }
 

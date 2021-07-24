@@ -95,6 +95,8 @@ class GenresHasCategoriesRuleUnitTest extends TestCase {
                 collect([
                     ['category_id' => 1],
                     ['category_id' => 2],
+                    ['category_id' => 1],
+                    ['category_id' => 2],
                 ])
             );
 

@@ -15,3 +15,4 @@ yarn-error.log
 **/_ide_helper**
 .phpstorm**
 !.env.example
+!.env.**.example

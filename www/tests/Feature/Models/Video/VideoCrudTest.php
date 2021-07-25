@@ -1,30 +1,14 @@
 <?php
 
-namespace Tests\Feature\Models;
+namespace Tests\Feature\Models\Video;
+
 
 use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class VideoTest extends TestCase {
-    use RefreshDatabase;
-
-    private $data;
-
-    protected function setUp(): void {
-        parent::setUp();
-
-        $this->data = [
-            'title' => 'title_test',
-            'description' => 'description_test',
-            'year_launched' => 2010,
-            'rating' => Video::RATING_LIST[0],
-            'duration' => 90,
-        ];
-    }
+class VideoCrudTest extends BaseVideoTestCase {
 
     public function test_List() {
         Video::factory()->create();
@@ -43,10 +27,25 @@ class VideoTest extends TestCase {
             'opened',
             'rating',
             'duration',
+            'video_file',
             'created_at',
             'updated_at',
-            'deleted_at'
+            'deleted_at',
         ], $videoKeys);
+    }
+
+    public function test_CreateWithRelations() {
+        $generate = $this->generateCategoryAndGenre();
+        $category = $generate['category'];
+        $genre = $generate['genre'];
+
+        $video = Video::create($this->data + [
+                'categories_id' => [$category->id],
+                'genres_id' => [$genre->id],
+            ]);
+
+        $this->assertHasCategory($video->id, $category->id);
+        $this->assertHasGenre($video->id, $genre->id);
     }
 
     public function test_CreateWithBasicFields() {
@@ -60,19 +59,6 @@ class VideoTest extends TestCase {
         $video = Video::create($this->data + ['opened' => true]);
         $this->assertTrue($video->opened);
         $this->assertDatabaseHas('videos', ['opened' => true]);
-    }
-
-    public function test_CreateWithRelations() {
-        $category = Category::factory()->create();
-        $genre = Genre::factory()->create();
-
-        $video = Video::create($this->data + [
-                'categories_id' => [$category->id],
-                'genres_id' => [$genre->id]
-            ]);
-
-        $this->assertHasCategory($video->id, $category->id);
-        $this->assertHasGenre($video->id, $genre->id);
     }
 
     public function test_RollbackCreate() {
@@ -207,7 +193,7 @@ class VideoTest extends TestCase {
         ]);
 
         Video::handleRelations($video, [
-           'categories_id' => [$categoriesId[1], $categoriesId[2]]
+            'categories_id' => [$categoriesId[1], $categoriesId[2]]
         ]);
 
         $this->assertDatabaseMissing('category_video', [
@@ -268,5 +254,15 @@ class VideoTest extends TestCase {
         $this->assertNotNull(
             Video::all()->find($video->id)
         );
+    }
+
+    protected function generateCategoryAndGenre(): array {
+        $category = Category::factory()->create();
+        $genre = Genre::factory()->create();
+
+        return [
+            'category' => $category,
+            'genre' => $genre
+        ];
     }
 }

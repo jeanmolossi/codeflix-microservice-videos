@@ -6,31 +6,13 @@ use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
 use Exception;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\Feature\Http\Controllers\Api\VideoController\BaseVideoControllerTestCase;
 use Tests\Traits\TestSaves;
+use Tests\Traits\TestUploads;
 use Tests\Traits\TestValidations;
 
-class VideoControllerTest extends TestCase {
-    use RefreshDatabase, TestValidations, TestSaves;
-
-    private $video;
-
-    private $sendData;
-
-    protected function setUp(): void {
-        parent::setUp();
-
-        $this->video = Video::factory()->create(['opened' => false]);
-
-        $this->sendData = [
-            'title' => 'title_test',
-            'description' => 'description_test',
-            'year_launched' => 2010,
-            'rating' => Video::RATING_LIST[0],
-            'duration' => 90
-        ];
-    }
+class VideoControllerCrudTest extends BaseVideoControllerTestCase {
+    use TestValidations, TestSaves, TestUploads;
 
     public function test_Index() {
         $response = $this->get(route('videos.index'));
@@ -141,7 +123,7 @@ class VideoControllerTest extends TestCase {
     /**
      * @throws Exception
      */
-    public function test_Saves() {
+    public function test_SavesWithoutFiles() {
         /** @var Category $category */
         $category = Category::factory()->create();
         /** @var Genre $genre */

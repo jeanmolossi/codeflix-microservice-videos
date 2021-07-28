@@ -1,32 +1,36 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Models;
 
+use Tests\TestCase;
 use App\Models\Category;
-use PHPUnit\Framework\TestCase;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CategoryTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function test_fillableAttributes()
+    private $category;
+
+    protected function setUp(): void
     {
+        parent::setUp();
+
+        $this->category = new Category();
+    }
+
+    public function test_FillableAttributes()
+    {
+
         $fillable = ['name', 'description', 'is_active'];
-        $category = new Category();
 
         $this->assertEquals(
             $fillable,
-            $category->getFillable()
+            $this->category->getFillable()
         );
     }
 
-    public function test_ifUseTraits()
+    public function test_IfUseTraits()
     {
         $traits = [
             HasFactory::class,
@@ -42,11 +46,11 @@ class CategoryTest extends TestCase
         );
     }
 
-    public function test_datesAttributes()
+    public function test_DatesAttributes()
     {
         $dates = ['deleted_at', 'created_at', 'updated_at'];
-        $category = new Category();
-        $categoryDates = $category->getDates();
+
+        $categoryDates = $this->category->getDates();
 
         foreach($dates as $date) {
             $this->assertContains($date, $categoryDates);
@@ -55,21 +59,19 @@ class CategoryTest extends TestCase
         $this->assertCount(count($dates), $categoryDates);
     }
 
-    public function test_casts()
+    public function test_Casts()
     {
         $casts = [
             'id' => 'string',
+            'is_active' => 'boolean',
             'deleted_at' => 'datetime'
         ];
-        $category = new Category();
 
-        $this->assertEquals($casts, $category->getCasts());
+        $this->assertEquals($casts, $this->category->getCasts());
     }
 
-    public function test_incrementing()
+    public function test_Incrementing()
     {
-        $category = new Category();
-
-        $this->assertFalse($category->getIncrementing());
+        $this->assertFalse($this->category->getIncrementing());
     }
 }

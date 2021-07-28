@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GenreController;
+use App\Http\Controllers\Api\CastMemberController;
+use App\Http\Controllers\Api\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,5 +28,6 @@ $exceptCreateAndEdit = [
 
 Route::resource('categories', CategoryController::class, $exceptCreateAndEdit);
 Route::resource('genres', GenreController::class, $exceptCreateAndEdit);
-
+Route::resource('cast_members', CastMemberController::class, $exceptCreateAndEdit);
+Route::resource('videos', VideoController::class, $exceptCreateAndEdit);
 

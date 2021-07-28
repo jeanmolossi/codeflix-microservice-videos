@@ -6,13 +6,8 @@ services:
     build:
       dockerfile: .docker/app/Dockerfile
       context: .
-      target: dev
-    entrypoint: dockerize -template /templates/.env:.env -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
-    environment:
-      - _DB_HOST=micro_codeflix_db
-      - _DB_DATABASE=micro_codeflix_videos
-      - _DB_USERNAME=root
-      - _DB_PASSWORD=root
+    #templates folder exists inside container only -- look at ./.docker/app/Dockerfile
+    entrypoint: dockerize -wait tcp://micro_codeflix_db:3306 -timeout 40s /entrypoint.sh
     volumes:
       - ./www:/var/www
     ports:
@@ -40,14 +35,16 @@ services:
   micro_codeflix_db:
     build: .docker/mysql
     container_name: micro_codeflix_db
+    command: --innodb-use-native-aio=0
     restart: always
     tty: true
     ports:
       - 33060:3306
     volumes:
       - ./.docker/dbdata:/var/lib/mysql
+      - ./.docker/mysql:/docker-entrypoint-initdb.d
     environment:
-      - MYSQL_DATABASE=micro_codeflix_videos
+      - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=root
     networks:
       - micro-codeflix-net

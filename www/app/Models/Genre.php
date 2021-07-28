@@ -21,7 +21,8 @@ class Genre extends Model
     protected $dates = ['deleted_at'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'is_active' => 'boolean'
     ];
 
     public $incrementing = false;

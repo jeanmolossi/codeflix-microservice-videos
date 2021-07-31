@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use ReflectionClass;
 
 abstract class BasicCrudController extends Controller {
+
+    protected $paginationSize = 15;
 
     protected abstract function model();
 
@@ -17,8 +21,20 @@ abstract class BasicCrudController extends Controller {
 
     protected abstract function resource();
 
+    protected abstract function resourceCollection();
+
     public function index() {
-        return $this->model()::all();
+        $data = !$this->paginationSize
+            ? $this->model()::all()
+            : $this->model()::paginate($this->paginationSize);
+
+        $resourceCollection = $this->resourceCollection();
+
+        $refClass = new ReflectionClass($this->resourceCollection());
+
+        return $refClass->isSubclassOf(CategoryResource::class)
+            ? new $resourceCollection($data)
+            : $resourceCollection::collection($data);
     }
 
     /**

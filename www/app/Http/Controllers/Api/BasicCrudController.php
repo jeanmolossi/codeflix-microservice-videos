@@ -5,23 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
-abstract class BasicCrudController extends Controller
-{
-    private $rules = [
-        'name' => 'required|max:255',
-        'is_active' => 'boolean'
-    ];
+abstract class BasicCrudController extends Controller {
 
     protected abstract function model();
+
     protected abstract function rulesStore();
+
     protected abstract function rulesUpdate();
 
-    public function index()
-    {
+    public function index() {
         return $this->model()::all();
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function store(Request $request) {
         $validatedData = $this->validate($request, $this->rulesStore());
 
@@ -42,6 +42,9 @@ abstract class BasicCrudController extends Controller
         return $this->findOrFail($id);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function update(Request $request, $id) {
         $obj = $this->findOrFail($id);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\VideoResource;
 use App\Models\Video;
 use App\Rules\GenresHasCategoriesRule;
 use Illuminate\Http\Request;
@@ -48,6 +49,24 @@ class VideoController extends BasicCrudController {
         return $obj;
     }
 
+    protected function addRuleIfGenreHasCategories(Request $request) {
+        $categoriesId = $request->get('categories_id');
+
+        $categoriesId = is_array($categoriesId) ? $categoriesId : [];
+
+        $this->rules['genres_id'][] = new GenresHasCategoriesRule(
+            $categoriesId
+        );
+    }
+
+    protected function rulesStore(): array {
+        return $this->rules;
+    }
+
+    protected function model(): string {
+        return Video::class;
+    }
+
     /**
      * @throws Throwable
      * @throws ValidationException
@@ -64,28 +83,18 @@ class VideoController extends BasicCrudController {
         return $obj;
     }
 
-    protected function addRuleIfGenreHasCategories(Request $request) {
-        $categoriesId = $request->get('categories_id');
-
-        $categoriesId = is_array($categoriesId) ? $categoriesId : [];
-
-        $this->rules['genres_id'][] = new GenresHasCategoriesRule(
-            $categoriesId
-        );
-    }
-
-    protected function model(): string {
-        return Video::class;
-    }
-
-    protected
-    function rulesStore(): array {
+    protected function rulesUpdate(): array {
         return $this->rules;
     }
 
-    protected
-    function rulesUpdate(): array {
-        return $this->rules;
+    protected function resource(): string {
+        return VideoResource::class;
     }
+
+    protected function resourceCollection(): string {
+        return $this->resource();
+    }
+
+
 }
 

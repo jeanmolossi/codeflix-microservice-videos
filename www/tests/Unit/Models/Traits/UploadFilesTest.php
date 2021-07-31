@@ -10,10 +10,11 @@ use Tests\Traits\UploadFilesStub;
 class UploadFilesTest extends TestCase {
     private $object;
 
-    protected function setUp(): void {
-        parent::setUp();
-
-        $this->object = new UploadFilesStub;
+    public function test_RelativeFilePath() {
+        $this->assertEquals(
+            "1/video.mp4",
+            $this->object->relativeFilePath('video.mp4')
+        );
     }
 
     public function test_UploadFile() {
@@ -29,6 +30,23 @@ class UploadFilesTest extends TestCase {
         $file_2 = UploadedFile::fake()->create('video-2.mp4');
         $this->object->uploadFiles([$file_1, $file_2]);
         Storage::assertExists("1/{$file_1->hashName()}");
+        Storage::assertExists("1/{$file_2->hashName()}");
+    }
+
+    public function test_DeleteOldFiles() {
+        Storage::fake();
+        $file_1 = UploadedFile::fake()->create('video1.mp4')->size(1);
+        $file_2 = UploadedFile::fake()->create('video2.mp4')->size(1);
+
+        $this->object->uploadFiles([$file_1, $file_2]);
+        $this->object->deleteOldFiles();
+
+        $this->assertCount(2, Storage::allFiles());
+
+        $this->object->oldFiles = [$file_1->hashName()];
+        $this->object->deleteOldFiles();
+
+        Storage::assertMissing("1/{$file_1->hashName()}");
         Storage::assertExists("1/{$file_2->hashName()}");
     }
 
@@ -99,17 +117,23 @@ class UploadFilesTest extends TestCase {
 
         $file_2 = UploadedFile::fake()->create('video_2.mp4');
 
-        $attributes = ['file_1' => $file_1, 'file_2' => $file_2,'other' => 'test'];
+        $attributes = ['file_1' => $file_1, 'file_2' => $file_2, 'other' => 'test'];
 
         $files = UploadFilesStub::extractFiles($attributes);
 
         $this->assertCount(3, $attributes);
         $this->assertEquals(
-            ['file_1' => $file_1->hashName(), 'file_2' => $file_2->hashName(),'other' => 'test'],
+            ['file_1' => $file_1->hashName(), 'file_2' => $file_2->hashName(), 'other' => 'test'],
             $attributes
         );
         $this->assertCount(2, $files);
         $this->assertEquals([$file_1, $file_2], $files);
+    }
+
+    protected function setUp(): void {
+        parent::setUp();
+
+        $this->object = new UploadFilesStub;
     }
 
 }

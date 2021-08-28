@@ -93,7 +93,7 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase {
             Arr::except($files, ['thumb_file', 'video_file']) + $newFiles
         );
 
-        $id = $response->json('id');
+        $id = $response->json('id') ?? $response->json('data.id');
 
         /** @var Video $video */
         $video = Video::all()->find($id);
@@ -107,7 +107,7 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase {
     }
 
     protected function assertFilesOnPersist(TestResponse $response, $files) {
-        $id = $response->json('id');
+        $id = $response->json('id') ?? $response->json('data.id');
 
         $video = Video::all()->find($id);
 

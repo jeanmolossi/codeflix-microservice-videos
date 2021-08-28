@@ -17,18 +17,6 @@ class BasicCrudControllerTest extends TestCase {
 
     private $controller;
 
-    protected function setUp(): void {
-        parent::setUp();
-        CategoryStub::dropTable();
-        CategoryStub::createTable();
-        $this->controller = new CategoryControllerStub();
-    }
-
-    protected function tearDown(): void {
-        CategoryStub::dropTable();
-        parent::tearDown();
-    }
-
     public function test_Index() {
         /** @var CategoryStub $category */
         $category = CategoryStub::create([
@@ -36,9 +24,13 @@ class BasicCrudControllerTest extends TestCase {
             'description' => 'test_description'
         ]);
 
-        $result = $this->controller->index()->toArray();
+        $resource = $this->controller->index();
 
-        $this->assertEquals([$category->toArray()], $result);
+        $serialized = $resource->response()->getData(true);
+
+        $this->assertEquals([$category->toArray()], $serialized['data']);
+        $this->assertArrayHasKey('meta', $serialized);
+        $this->assertArrayHasKey('links', $serialized);
     }
 
     public function test_InvalidationDataInStore() {
@@ -65,9 +57,11 @@ class BasicCrudControllerTest extends TestCase {
 
         $obj = $this->controller->store($request);
 
+        $serialized = $obj->response()->getData(true);
+
         $this->assertEquals(
             CategoryStub::all()->find(1)->toArray(),
-            $obj->toArray()
+            $serialized['data']
         );
     }
 
@@ -83,9 +77,9 @@ class BasicCrudControllerTest extends TestCase {
         $reflectionMethod = $reflectionClass->getMethod('findOrFail');
         $reflectionMethod->setAccessible(true);
 
-        $result = $reflectionMethod->invokeArgs($this->controller, [$category->id]);
+        $resource = $reflectionMethod->invokeArgs($this->controller, [$category->id]);
 
-        $this->assertInstanceOf(CategoryStub::class, $result);
+        $this->assertInstanceOf(CategoryStub::class, $resource);
     }
 
     public function test_FindOrFailThrowExceptionWhenIdInvalid() {
@@ -96,9 +90,9 @@ class BasicCrudControllerTest extends TestCase {
         $reflectionMethod = $reflectionClass->getMethod('findOrFail');
         $reflectionMethod->setAccessible(true);
 
-        $result = $reflectionMethod->invokeArgs($this->controller, [0]);
+        $resource = $reflectionMethod->invokeArgs($this->controller, [0]);
 
-        $this->assertInstanceOf(CategoryStub::class, $result);
+        $this->assertInstanceOf(CategoryStub::class, $resource);
     }
 
     public function test_Show() {
@@ -108,11 +102,13 @@ class BasicCrudControllerTest extends TestCase {
             'description' => 'test_description'
         ]);
 
-        $result = $this->controller->show($category->id);
+        $resource = $this->controller->show($category->id);
+
+        $serialized = $resource->response()->getData(true);
 
         $this->assertEquals(
-            $result->toArray(),
-            CategoryStub::all()->find(1)->toArray()
+            $category->toArray(),
+            $serialized['data']
         );
     }
 
@@ -132,11 +128,13 @@ class BasicCrudControllerTest extends TestCase {
                 'description' => 'test_description'
             ]);
 
-        $result = $this->controller->update($request, $category->id);
+        $resource = $this->controller->update($request, $category->id);
+
+        $serialized = $resource->response()->getData(true);
 
         $this->assertEquals(
-            $result->toArray(),
-            CategoryStub::all()->find(1)->toArray()
+            $category->toArray(),
+            $serialized['data']
         );
     }
 
@@ -149,10 +147,22 @@ class BasicCrudControllerTest extends TestCase {
 
         $response = $this->controller->destroy($category->id);
 
-        $this->
-            createTestResponse($response)
+        $this
+            ->createTestResponse($response)
             ->assertStatus(204);
 
         $this->assertCount(0, CategoryStub::all());
+    }
+
+    protected function setUp(): void {
+        parent::setUp();
+        CategoryStub::dropTable();
+        CategoryStub::createTable();
+        $this->controller = new CategoryControllerStub();
+    }
+
+    protected function tearDown(): void {
+        CategoryStub::dropTable();
+        parent::tearDown();
     }
 }

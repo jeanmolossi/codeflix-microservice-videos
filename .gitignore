@@ -17,4 +17,5 @@ yarn-error.log
 .vscode/
 .history/
 .devcontainer/
+.npm-cache/
 **/log.junit.*

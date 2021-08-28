@@ -21,7 +21,7 @@ class GenreController extends BasicCrudController {
      * @throws Throwable
      * @throws ValidationException
      */
-    public function store(Request $request): Genre {
+    public function store(Request $request) {
         $validatedData = $this->validate($request, $this->rulesStore());
 
         $self = $this;
@@ -36,7 +36,9 @@ class GenreController extends BasicCrudController {
 
         $obj->refresh();
 
-        return $obj;
+        $resource = $this->resource();
+
+        return new $resource($obj);
     }
 
     /**
@@ -54,7 +56,9 @@ class GenreController extends BasicCrudController {
             $obj->update($validatedData);
             $self->handleRelations($obj, $request);
 
-            return $obj;
+            $resource = $self->resource();
+
+            return new $resource($obj);
         });
     }
 

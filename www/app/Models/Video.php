@@ -127,26 +127,26 @@ class Video extends Model {
     }
 
     public function getThumbFileUrlAttribute(): ?string {
-        return $this->thumb_file
-            ? $this->getFileUrl($this->thumb_file)
+        return $this->attributes['thumb_file']
+            ? $this->getFileUrl($this->attributes['thumb_file'])
             : null;
     }
 
     public function getBannerFileUrlAttribute(): ?string {
-        return $this->banner_file
-            ? $this->getFileUrl($this->banner_file)
+        return $this->attributes['banner_file']
+            ? $this->getFileUrl($this->attributes['banner_file'])
             : null;
     }
 
     public function getTrailerFileUrlAttribute(): ?string {
-        return $this->trailer_file
-            ? $this->getFileUrl($this->trailer_file)
+        return $this->attributes['trailer_file']
+            ? $this->getFileUrl($this->attributes['trailer_file'])
             : null;
     }
 
     public function getVideoFileUrlAttribute(): ?string {
-        return $this->video_file
-            ? $this->getFileUrl($this->video_file)
+        return $this->attributes['video_file']
+            ? $this->getFileUrl($this->attributes['video_file'])
             : null;
     }
 }

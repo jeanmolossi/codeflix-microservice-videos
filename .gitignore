@@ -3,8 +3,10 @@
 /public/storage
 /storage/*.key
 /vendor
-.env
-.env.backup
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.testing.example
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -15,3 +17,4 @@ yarn-error.log
 .vscode/
 .history/
 .devcontainer/
+**/log.junit.*

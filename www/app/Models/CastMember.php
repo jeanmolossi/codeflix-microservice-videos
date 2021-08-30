@@ -2,29 +2,21 @@
 
 namespace App\Models;
 
-use App\Models\Traits\Uuid as TraitsUuid;
+use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
-{
+class CastMember extends Model {
     use HasFactory,
         SoftDeletes,
-        TraitsUuid;
+        Uuid;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'is_active'
-    ];
+    const TYPE_DIRECTOR = 1;
+    const TYPE_ACTOR = 2;
 
+    protected $fillable = ['name', 'type'];
     protected $dates = ['deleted_at'];
-
-    protected $casts = [
-        'id' => 'string',
-        'is_active' => 'boolean'
-    ];
-
+    protected $casts = ['id' => 'string', 'type' => 'integer'];
     public $incrementing = false;
 }

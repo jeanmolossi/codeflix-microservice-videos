@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Genre extends Model
@@ -21,6 +22,13 @@ class Genre extends Model
     protected $dates = ['deleted_at'];
 
     protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+        'is_active' => 'boolean'
     ];
+
+    public $incrementing = false;
+
+    public function categories(): BelongsToMany {
+        return $this->belongsToMany(Category::class);
+    }
 }

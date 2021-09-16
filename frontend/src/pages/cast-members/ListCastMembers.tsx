@@ -14,7 +14,7 @@ export const ListCastMembers = () => {
                     title={ 'Adicionar membro de elenco' }
                     size={ 'small' }
                     component={ Link }
-                    to={ '/membro-elenco/criar' }
+                    to={ '/membros-elencos/criar' }
                 >
                     <Add />
                 </Fab>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Chip } from "@material-ui/core";
 import MUIDataTable, { MUIDataTableColumn } from "mui-datatables";
 import { format, parseISO } from 'date-fns';
 
@@ -15,6 +16,17 @@ const columnsDefinition: MUIDataTableColumn[] = [
         options: {
             customBodyRender: (values) => {
                 return values?.map((category: any) => category.name).join(', ')
+            }
+        }
+    },
+    {
+        name: "is_active",
+        label: "Ativo ?",
+        options: {
+            customBodyRender: (value) => {
+                return value
+                    ? <Chip label={ 'Sim' } color={ 'primary' } />
+                    : <Chip label={ 'Nao' } color={ 'secondary' } />;
             }
         }
     },

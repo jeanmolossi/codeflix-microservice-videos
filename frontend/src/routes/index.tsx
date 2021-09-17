@@ -1,6 +1,7 @@
 import { RouteProps as DOMRouteProps } from 'react-router-dom';
 import { Dashboard } from "../pages/Dashboard";
 import { ListCategories } from "../pages/category/ListCategories";
+import { CreateCategory } from "../pages/category/CreateCategory";
 import { ListCastMembers } from "../pages/cast-members/ListCastMembers";
 import { ListGenres } from "../pages/genre/ListGenres";
 
@@ -32,7 +33,7 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
     [ 'categories.create', {
         label: 'Criar categorias',
         path: '/categorias/criar',
-        component: ListCategories,
+        component: CreateCategory,
         exact: true
     } ],
     [ 'members.list', {

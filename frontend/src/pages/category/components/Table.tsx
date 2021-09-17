@@ -3,7 +3,7 @@ import { Chip } from '@material-ui/core';
 import MUIDataTable, { MUIDataTableColumn } from "mui-datatables";
 import { format, parseISO } from 'date-fns';
 
-import { httpVideo } from "../../../util/http";
+import { Category, categoryHttp } from "../../../util/http/category-http";
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -33,10 +33,13 @@ const columnsDefinition: MUIDataTableColumn[] = [
 ];
 
 export const Table = () => {
-    const [ data, setData ] = useState([]);
+    const [ data, setData ] = useState<Category[]>([]);
 
     useEffect(() => {
-        httpVideo.get('/categories').then(({ data }) => setData(data.data))
+        categoryHttp.list()
+            .then((response) =>
+                setData(response.data.data)
+            )
     }, []);
 
     return (

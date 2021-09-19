@@ -1,19 +1,23 @@
 import React from 'react';
-import { Box } from "@material-ui/core";
+import { Box, CssBaseline, MuiThemeProvider } from "@material-ui/core";
 import { Navbar } from "./components";
 import { BrowserRouter } from "react-router-dom";
 import { AppRouter } from "./routes/AppRouter";
 import { Breadcrumbs } from "./components/Breadcrumbs";
+import { theme } from "./config/theme";
 
 function App() {
     return (
-        <BrowserRouter>
-            <Navbar/>
-            <Box paddingTop={ '70px' }>
-                <Breadcrumbs/>
-                <AppRouter/>
-            </Box>
-        </BrowserRouter>
+        <MuiThemeProvider theme={ theme }>
+            <CssBaseline />
+            <BrowserRouter>
+                <Navbar />
+                <Box paddingTop={ '70px' }>
+                    <Breadcrumbs />
+                    <AppRouter />
+                </Box>
+            </BrowserRouter>
+        </MuiThemeProvider>
     );
 }
 

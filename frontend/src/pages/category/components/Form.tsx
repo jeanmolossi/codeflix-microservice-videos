@@ -21,7 +21,7 @@ export const Form = ({ ..._ }: FormProps) => {
         variant: 'outlined',
     }
 
-    const { register, handleSubmit, getValues } = useForm<FormFields>({
+    const { register, handleSubmit, getValues, watch } = useForm<FormFields>({
         defaultValues: {
             is_active: true
         }
@@ -68,7 +68,7 @@ export const Form = ({ ..._ }: FormProps) => {
                 inputProps={ {
                     ...register('is_active')
                 } }
-                defaultChecked
+                checked={ watch('is_active') }
             />
             <label htmlFor={ 'is_active' }>Ativo ?</label>
 

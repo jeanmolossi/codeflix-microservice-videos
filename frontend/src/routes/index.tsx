@@ -45,7 +45,7 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
         exact: true
     } ],
     [ 'members.create', {
-        label: 'Criar categorias',
+        label: 'Criar membro',
         path: '/membros-elencos/criar',
         component: CreateCastMember,
         exact: true

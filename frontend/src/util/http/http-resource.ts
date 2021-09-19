@@ -3,7 +3,7 @@ import { AxiosInstance, AxiosResponse } from 'axios';
 type DataResource<T> = { data: T };
 type DataResponse<T> = AxiosResponse<DataResource<T>>;
 
-export class HttpResource<T = any, ID = any> {
+export class HttpResource<T = any, ID = string> {
 
     constructor(protected http: AxiosInstance, protected resource: string) {
     }

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Chip } from '@material-ui/core';
 import MUIDataTable, { MUIDataTableColumn } from "mui-datatables";
 import { format, parseISO } from 'date-fns';
 
 import { Category, categoryHttp } from "../../../util/http/category-http";
+import { BadgeNo, BadgeYes } from "../../../components";
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -16,8 +16,8 @@ const columnsDefinition: MUIDataTableColumn[] = [
         options: {
             customBodyRender: (value) => {
                 return value
-                    ? <Chip label={ 'Sim' } color={ 'primary' } />
-                    : <Chip label={ 'Nao' } color={ 'secondary' } />;
+                    ? <BadgeYes />
+                    : <BadgeNo />;
             }
         }
     },

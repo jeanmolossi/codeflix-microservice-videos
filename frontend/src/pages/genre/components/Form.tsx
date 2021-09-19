@@ -19,7 +19,8 @@ export const Form = ({ ..._ }: FormProps) => {
 
     const buttonProps: ButtonProps = {
         className: classes.submit,
-        variant: 'outlined',
+        variant: 'contained',
+        color: 'secondary'
     }
 
     const {
@@ -100,7 +101,7 @@ export const Form = ({ ..._ }: FormProps) => {
                     ...register('is_active')
                 } }
                 checked={ watch('is_active') }
-                defaultChecked
+                color={ 'primary' }
             />
             <label htmlFor={ 'is_active' }>Ativo ?</label>
 

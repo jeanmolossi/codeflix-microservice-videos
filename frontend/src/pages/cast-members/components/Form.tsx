@@ -29,10 +29,13 @@ export const Form = ({ ..._ }: FormProps) => {
 
     const buttonProps: ButtonProps = {
         className: classes.submit,
-        variant: 'outlined',
+        variant: 'contained',
+        color: 'secondary'
     }
 
-    const { register, handleSubmit, getValues, setValue, watch } = useForm<FormFields>();
+    const { register, handleSubmit, getValues, setValue, watch } = useForm<FormFields>({
+        defaultValues: { type: MemberType.Actor }
+    });
 
     const onSubmit = useCallback((formData: FormFields, _: BaseSyntheticEvent | undefined) => {
         castMemberHttp.create(formData)
@@ -71,12 +74,12 @@ export const Form = ({ ..._ }: FormProps) => {
                     value={ watch('type', MemberType.Actor) }
                 >
                     <FormControlLabel
-                        control={ <Radio /> }
+                        control={ <Radio color={ 'primary' } /> }
                         label={ 'Ator' }
                         value={ MemberType.Actor }
                     />
                     <FormControlLabel
-                        control={ <Radio /> }
+                        control={ <Radio color={ 'primary' } /> }
                         label={ 'Diretor' }
                         value={ MemberType.Director }
                     />

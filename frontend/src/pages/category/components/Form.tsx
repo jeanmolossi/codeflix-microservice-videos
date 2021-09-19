@@ -18,7 +18,8 @@ export const Form = ({ ..._ }: FormProps) => {
 
     const buttonProps: ButtonProps = {
         className: classes.submit,
-        variant: 'outlined',
+        variant: 'contained',
+        color: 'secondary'
     }
 
     const { register, handleSubmit, getValues, watch } = useForm<FormFields>({
@@ -69,6 +70,7 @@ export const Form = ({ ..._ }: FormProps) => {
                     ...register('is_active')
                 } }
                 checked={ watch('is_active') }
+                color={ 'primary' }
             />
             <label htmlFor={ 'is_active' }>Ativo ?</label>
 

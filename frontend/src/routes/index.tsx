@@ -4,6 +4,8 @@ import { ListCategories } from "../pages/category/ListCategories";
 import { CreateCategory } from "../pages/category/CreateCategory";
 import { ListCastMembers } from "../pages/cast-members/ListCastMembers";
 import { ListGenres } from "../pages/genre/ListGenres";
+import { CreateCastMember } from "../pages/cast-members/CreateCastMember";
+import { CreateGenre } from "../pages/genre/CreateGenre";
 
 export type RouteNames = 'dashboard'
     | 'categories.list'
@@ -45,19 +47,19 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
     [ 'members.create', {
         label: 'Criar categorias',
         path: '/membros-elencos/criar',
-        component: () => <h1>Criar membro</h1>,
+        component: CreateCastMember,
         exact: true
     } ],
     [ 'genres.list', {
-        label: 'Listagem de generos',
+        label: 'Listagem de gêneros',
         path: '/generos',
         component: ListGenres,
         exact: true
     } ],
     [ 'genres.create', {
-        label: 'Criar Genero',
+        label: 'Criar Gênero',
         path: '/generos/criar',
-        component: () => <h1>Criar membro</h1>,
+        component: CreateGenre,
         exact: true
     } ],
 ]);

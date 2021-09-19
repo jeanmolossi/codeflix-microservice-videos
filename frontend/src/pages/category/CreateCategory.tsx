@@ -2,11 +2,9 @@ import React from 'react';
 import { Page } from "../../components";
 import { Form } from "./components";
 
-type CreateCategoryProps = {}
-
-export const CreateCategory = ({}: CreateCategoryProps) => {
+export const CreateCategory = () => {
     return (
-        <Page title={'Criar categoria'}>
+        <Page title={ 'Criar categoria' }>
             <Form />
         </Page>
     )

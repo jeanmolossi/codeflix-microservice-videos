@@ -14,6 +14,7 @@ export const ListGenres = () => {
                     size={ 'small' }
                     component={ Link }
                     to={ '/generos/criar' }
+                    color={ 'secondary' }
                 >
                     <Add />
                 </Fab>

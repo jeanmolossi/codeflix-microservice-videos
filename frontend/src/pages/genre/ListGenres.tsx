@@ -7,10 +7,10 @@ import { Table } from "./components";
 
 export const ListGenres = () => {
     return (
-        <Page title={ 'Listagem de generos' }>
+        <Page title={ 'Listagem de gêneros' }>
             <Box dir={ 'rtl' }>
                 <Fab
-                    title={ 'Adicionar genero' }
+                    title={ 'Adicionar gênero' }
                     size={ 'small' }
                     component={ Link }
                     to={ '/generos/criar' }

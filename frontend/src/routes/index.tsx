@@ -27,7 +27,7 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
         exact: true
     } ],
     [ 'categories.list', {
-        label: 'Listar categorias',
+        label: 'Categorias',
         path: '/categorias',
         component: ListCategories,
         exact: true
@@ -39,7 +39,7 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
         exact: true
     } ],
     [ 'members.list', {
-        label: 'Listagem de membros de elencos',
+        label: 'Membros de elencos',
         path: '/membros-elencos',
         component: ListCastMembers,
         exact: true
@@ -51,7 +51,7 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
         exact: true
     } ],
     [ 'genres.list', {
-        label: 'Listagem de gêneros',
+        label: 'Gêneros',
         path: '/generos',
         component: ListGenres,
         exact: true

@@ -11,14 +11,22 @@ class CategoryControllerStub extends BasicCrudController
         return CategoryStub::class;
     }
 
-    protected function rulesStore() {
+    protected function rulesStore(): array {
         return [
             'name' => 'required|max:255',
             'description' => 'nullable'
         ];
     }
 
-    protected function rulesUpdate() {
+    protected function rulesUpdate(): array {
         return $this->rulesStore();
+    }
+
+    protected function resource(): string {
+        return CategoryStub::class;
+    }
+
+    protected function resourceCollection(): string {
+        return $this->resource();
     }
 }

@@ -5,12 +5,13 @@ namespace Tests\Feature\Http\Controllers\Api\VideoController;
 use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Testing\TestResponse;
+use Storage;
 use Tests\TestCase;
 
-abstract class BaseVideoControllerTestCase extends TestCase
-{
-    use RefreshDatabase;
+abstract class BaseVideoControllerTestCase extends TestCase {
+    use DatabaseMigrations;
 
     protected $video;
 
@@ -19,7 +20,13 @@ abstract class BaseVideoControllerTestCase extends TestCase
     protected function setUp(): void {
         parent::setUp();
 
-        $this->video = Video::factory()->create(['opened' => false]);
+        $this->video = Video::factory()->create([
+            'opened' => false,
+            'thumb_file' => 'thumb.jpg',
+            'banner_file' => 'banner.jpg',
+            'video_file' => 'video.mp4',
+            'trailer_file' => 'trailer.mp4',
+        ]);
 
         $category = Category::factory()->create();
 
@@ -38,4 +45,19 @@ abstract class BaseVideoControllerTestCase extends TestCase
         ];
     }
 
+    protected function assertIfFilesUrlExists(Video $video, TestResponse $response) {
+        $fileFields = Video::$fileFields;
+
+        $data = $response->json('data');
+        $data = array_key_exists(0, $data) ? $data[0] : $data;
+
+        foreach ($fileFields as $field) {
+            $file = $video->{$field};
+
+            $this->assertEquals(
+                Storage::url($video->relativeFilePath($file)),
+                $data[$field . '_url']
+            );
+        }
+    }
 }

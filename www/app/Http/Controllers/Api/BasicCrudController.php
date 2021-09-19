@@ -13,16 +13,6 @@ abstract class BasicCrudController extends Controller {
 
     protected $paginationSize = 15;
 
-    protected abstract function model();
-
-    protected abstract function rulesStore();
-
-    protected abstract function rulesUpdate();
-
-    protected abstract function resource();
-
-    protected abstract function resourceCollection();
-
     public function index() {
         $data = !$this->paginationSize
             ? $this->model()::all()
@@ -36,6 +26,10 @@ abstract class BasicCrudController extends Controller {
             ? new $resourceCollection($data)
             : $resourceCollection::collection($data);
     }
+
+    protected abstract function model();
+
+    protected abstract function resourceCollection();
 
     /**
      * @throws ValidationException
@@ -51,16 +45,20 @@ abstract class BasicCrudController extends Controller {
         return new $resource($obj);
     }
 
+    protected abstract function rulesStore();
+
+    protected abstract function resource();
+
+    public function show($id) {
+        $resource = $this->resource();
+        return new $resource($this->findOrFail($id));
+    }
+
     protected function findOrFail($id) {
         $model = $this->model();
         $keyName = (new $model)->getRouteKeyName();
 
         return $this->model()::where($keyName, $id)->firstOrFail();
-    }
-
-    public function show($id) {
-        $resource = $this->resource();
-        return new $resource($this->findOrFail($id));
     }
 
     /**
@@ -77,6 +75,8 @@ abstract class BasicCrudController extends Controller {
 
         return new $resource($obj);
     }
+
+    protected abstract function rulesUpdate();
 
     public function destroy($id): Response {
         $obj = $this->findOrFail($id);

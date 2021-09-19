@@ -37,7 +37,7 @@ class VideoController extends BasicCrudController {
      * @throws Throwable
      * @throws ValidationException
      */
-    public function store(Request $request): Video {
+    public function store(Request $request) {
         $this->addRuleIfGenreHasCategories($request);
 
         $validatedData = $this->validate($request, $this->rulesStore());
@@ -46,7 +46,9 @@ class VideoController extends BasicCrudController {
 
         $obj->refresh();
 
-        return $obj;
+        $resource = $this->resource();
+
+        return new $resource($obj);
     }
 
     protected function addRuleIfGenreHasCategories(Request $request) {
@@ -80,7 +82,9 @@ class VideoController extends BasicCrudController {
 
         $obj->update($validatedData);
 
-        return $obj;
+        $resource = $this->resource();
+
+        return new $resource($obj);
     }
 
     protected function rulesUpdate(): array {

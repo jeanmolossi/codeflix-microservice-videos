@@ -1,10 +1,13 @@
 import React from 'react';
 import {
-    makeStyles, createStyles,
+    Box,
+    Breadcrumbs as MuiBreadcrumbs,
+    Container,
+    createStyles,
     Link,
     LinkProps,
+    makeStyles,
     Typography,
-    Breadcrumbs as MuiBreadcrumbs, Container, Box,
 } from '@material-ui/core';
 import { Route } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
@@ -18,16 +21,16 @@ const breadcrumbNameMap: { [key: string]: string } = {};
     breadcrumbNameMap[route.path as string] = route.label
 });
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
     createStyles({
-        root: {
-            display: 'flex',
-            flexDirection: 'column',
-        },
         linkRouter: {
-            color: '#4db5ab',
-            '&:focus, &:active': { color: '#4db5ab', },
-            '&:active': { color: '#4db5ab', },
+            color: theme.palette.secondary.main,
+            '&:focus, &:active': {
+                color: theme.palette.secondary.main
+            },
+            '&:hover': {
+                color: theme.palette.secondary.dark
+            },
         }
     }),
 );

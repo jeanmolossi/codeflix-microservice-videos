@@ -9,7 +9,8 @@ const palette: PaletteOptions = {
     },
     secondary: {
         main: '#4db5ab',
-        contrastText: '#ffffff'
+        contrastText: '#ffffff',
+        dark: '#055a52'
     },
     background: {
         default: '#fafafa'
@@ -22,9 +23,6 @@ const palette: PaletteOptions = {
         main: red.A400
     }
 };
-
-const primaryMain = (palette!.primary as SimplePaletteColorOptions).main;
-const secondaryMain = (palette!.secondary as SimplePaletteColorOptions).main;
 
 export const theme = createTheme({
     palette,
@@ -40,15 +38,15 @@ export const theme = createTheme({
                 backgroundColor: palette!.background!.default
             },
             icon: {
-                color: primaryMain,
+                color: getSimpleColor('primary', 'main'),
                 '&:hover, &:active, &.focus': {
-                    color: '#055a52'
+                    color: getSimpleColor('secondary', 'dark'),
                 },
             },
             iconActive: {
-                color: '#055a52',
+                color: getSimpleColor('secondary', 'dark'),
                 '&:hover, &:active, &.focus': {
-                    color: '#055a52'
+                    color: getSimpleColor('secondary', 'dark'),
                 },
             },
         },
@@ -56,7 +54,7 @@ export const theme = createTheme({
             fixedHeader: {
                 paddingTop: 8,
                 paddingBottom: 8,
-                backgroundColor: primaryMain,
+                backgroundColor: getSimpleColor('primary', 'main'),
                 color: '#ffffff',
                 '&[aria-sort]': {
                     backgroundColor: '#459ac4'
@@ -77,7 +75,7 @@ export const theme = createTheme({
         },
         MUIDataTableSelectCell: {
             headerCell: {
-                backgroundColor: primaryMain,
+                backgroundColor: getSimpleColor('primary', 'main'),
                 '& span': {
                     color: '#ffffff !important'
                 }
@@ -85,18 +83,18 @@ export const theme = createTheme({
         },
         MUIDataTableBodyCell: {
             root: {
-                color: secondaryMain,
+                color: getSimpleColor('secondary', 'main'),
                 '&:hover, &:active, &.focus': {
-                    color: secondaryMain
+                    color: getSimpleColor('secondary', 'main')
                 },
             }
         },
         MUIDataTableToolbarSelect: {
             title: {
-                color: primaryMain
+                color: getSimpleColor('primary', 'main')
             },
             iconButton: {
-                color: primaryMain
+                color: getSimpleColor('primary', 'main')
             }
         },
         MUIDataTableBodyRow: {
@@ -108,8 +106,16 @@ export const theme = createTheme({
         },
         MUIDataTablePagination: {
             root: {
-                color: primaryMain
+                color: getSimpleColor('primary', 'main')
             }
         }
     }
 });
+
+function getSimpleColor(
+    paletteColor: keyof PaletteOptions,
+    key: keyof SimplePaletteColorOptions,
+    customPalette: PaletteOptions = palette
+): string {
+    return (customPalette[paletteColor] as SimplePaletteColorOptions)[key] as string;
+}

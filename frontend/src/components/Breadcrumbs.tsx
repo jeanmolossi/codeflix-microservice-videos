@@ -67,29 +67,35 @@ const Breadcrumb = () => {
 
         pathnames.unshift('/')
 
-        return <MuiBreadcrumbs aria-label="breadcrumb">
-            { pathnames.map((value, index) => {
-                const last = index === pathnames.length - 1;
-                const to = `${ pathnames.slice(0, index + 1).join('/').replace('//', '/') }`;
+        return (
+            <MuiBreadcrumbs aria-label="breadcrumb">
+                { pathnames.map((value, index) => {
+                    const last = index === pathnames.length - 1;
+                    const to = `${ pathnames.slice(0, index + 1).join('/').replace('//', '/') }`;
 
-                const route = Object.keys(breadcrumbNameMap)
-                    .find(path => new RouteParser(path).match(to))
+                    const route = Object.keys(breadcrumbNameMap)
+                        .find(path => new RouteParser(path).match(to))
 
-                if (!route) {
-                    return <></>;
-                }
+                    if (!route) {
+                        return null;
+                    }
 
-                return last ? <Typography color="textPrimary" key={ to }>
-                    { breadcrumbNameMap[route] }
-                </Typography> : <LinkRouter
-                    color="inherit"
-                    to={ to }
-                    key={ to }
-                    className={ classes.linkRouter }
-                >
-                    { breadcrumbNameMap[route] }
-                </LinkRouter>;
-            }) }
-        </MuiBreadcrumbs>;
+                    return last ? (
+                        <Typography color="textPrimary" key={ to }>
+                            { breadcrumbNameMap[route] }
+                        </Typography>
+                    ) : (
+                        <LinkRouter
+                            color="inherit"
+                            to={ to }
+                            key={ to }
+                            className={ classes.linkRouter }
+                        >
+                            { breadcrumbNameMap[route] }
+                        </LinkRouter>
+                    );
+                }) }
+            </MuiBreadcrumbs>
+        );
     }
 }

@@ -2,8 +2,8 @@ import React, { BaseSyntheticEvent, useCallback } from 'react';
 import { Box, Button, ButtonProps, Checkbox, makeStyles, TextField } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { Category, categoryHttp } from "../../../util/http/category-http";
-
-type FormProps = {}
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from '../../../config/yup';
 
 type FormFields = Omit<Category, 'id'>;
 
@@ -13,7 +13,13 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export const Form = ({ ..._ }: FormProps) => {
+const validationSchema = yup.object().shape({
+    name: yup.string().label('Nome').required(),
+    description: yup.string(),
+    is_active: yup.boolean().label('Ativo').required()
+}) as yup.SchemaOf<FormFields>;
+
+export const Form = () => {
     const classes = useStyles();
 
     const buttonProps: ButtonProps = {
@@ -22,9 +28,11 @@ export const Form = ({ ..._ }: FormProps) => {
         color: 'secondary'
     }
 
-    const { register, handleSubmit, getValues, watch } = useForm<FormFields>({
+    const { register, handleSubmit, getValues, watch, formState: { errors } } = useForm<FormFields>({
+        context: validationSchema,
+        resolver: yupResolver(validationSchema),
         defaultValues: {
-            is_active: true
+            is_active: true,
         }
     });
 
@@ -45,8 +53,12 @@ export const Form = ({ ..._ }: FormProps) => {
                 fullWidth
                 variant={ 'outlined' }
                 inputProps={ {
-                    ...register('name')
+                    ...register('name', {
+                        required: 'O campo nome e obrigatório'
+                    })
                 } }
+                helperText={ errors.name?.message }
+                error={ !!errors.name }
             />
 
             <TextField

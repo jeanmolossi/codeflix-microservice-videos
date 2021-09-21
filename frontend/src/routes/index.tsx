@@ -10,6 +10,7 @@ import { CreateGenre } from "../pages/genre/CreateGenre";
 export type RouteNames = 'dashboard'
     | 'categories.list'
     | 'categories.create'
+    | 'categories.edit'
     | 'members.list'
     | 'members.create'
     | 'genres.list'
@@ -35,6 +36,12 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
     [ 'categories.create', {
         label: 'Criar categorias',
         path: '/categorias/criar',
+        component: CreateCategory,
+        exact: true
+    } ],
+    [ 'categories.edit', {
+        label: 'Editar categoria',
+        path: '/categorias/:id/editar',
         component: CreateCategory,
         exact: true
     } ],

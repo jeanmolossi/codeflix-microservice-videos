@@ -10,6 +10,9 @@ const ptBR = {
     },
     number: {
         min: '${path} deve ter no minima ${min} caracteres'
+    },
+    array: {
+        min: 'Selecione no minimo ${min} ${path}'
     }
 }
 

@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, ChangeEvent, useCallback, useEffect } from 'react';
+import React, { BaseSyntheticEvent, ChangeEvent, useCallback, useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -13,6 +13,8 @@ import {
 } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import { CastMember, castMemberHttp, MemberType } from "../../../util/http/cast-member-http";
+import { useHistory, useParams } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 type FormProps = {}
 
@@ -26,23 +28,58 @@ const useStyles = makeStyles(theme => ({
 
 export const Form = ({ ..._ }: FormProps) => {
     const classes = useStyles();
+    const { id } = useParams<{ id?: string }>();
+    const snackbar = useSnackbar();
+    const history = useHistory();
+
+    const [ loading, setLoading ] = useState(false);
+    const [ castMember, setCastMember ] = useState({} as CastMember);
 
     const buttonProps: ButtonProps = {
         className: classes.submit,
         variant: 'contained',
-        color: 'secondary'
+        color: 'secondary',
+        disabled: loading
     }
 
-    const { register, handleSubmit, getValues, setValue, watch } = useForm<FormFields>({
+    const { register, handleSubmit, getValues, setValue, watch, reset } = useForm<FormFields>({
         defaultValues: { type: MemberType.Actor }
     });
 
-    const onSubmit = useCallback((formData: FormFields, _: BaseSyntheticEvent | undefined) => {
-        castMemberHttp.create(formData)
-            .then((response) =>
-                console.log(response.data.data)
+    const saveButtonsBehavior = useCallback((data: CastMember, e?: BaseSyntheticEvent, id?: string) => {
+        if (!!e) {
+            (!!id
+                    ? history.replace(`/membros-elencos/${ data.id }/editar`)
+                    : history.push(`/membros-elencos/${ data.id }/editar`)
             )
-    }, []);
+            return;
+        }
+        history.push('/membros-elencos')
+    }, [ history ])
+
+    const onSubmit = useCallback((formData: FormFields, e: BaseSyntheticEvent | undefined) => {
+        const http = castMember.id && id
+            ? castMemberHttp.update(id, formData)
+            : castMemberHttp.create(formData);
+
+        setLoading(true)
+        http
+            .then(({ data }) => {
+                snackbar.enqueueSnackbar(
+                    'Membro de elenco salvo com sucesso',
+                    { variant: "success" }
+                )
+
+                saveButtonsBehavior(data.data, e, id)
+            })
+            .catch((err) => {
+                snackbar.enqueueSnackbar(
+                    err.message,
+                    { variant: "error" }
+                )
+            })
+            .finally(() => setLoading(false))
+    }, [ id, saveButtonsBehavior, snackbar, castMember.id ]);
 
     const onSubmitOnly = () => onSubmit(getValues(), undefined)
 
@@ -54,6 +91,16 @@ export const Form = ({ ..._ }: FormProps) => {
         register("type")
     }, [ register ]);
 
+    useEffect(() => {
+        if (id) {
+            castMemberHttp.get(id)
+                .then(({ data }) => {
+                    setCastMember(data.data)
+                    reset(data.data)
+                })
+        }
+    }, [ id, reset ]);
+
     return (
         <form onSubmit={ handleSubmit(onSubmit) }>
             <TextField
@@ -64,9 +111,16 @@ export const Form = ({ ..._ }: FormProps) => {
                 inputProps={ {
                     ...register('name')
                 } }
+                InputLabelProps={ {
+                    shrink: true
+                } }
+                disabled={ loading }
             />
 
-            <FormControl margin={ 'normal' }>
+            <FormControl
+                margin={ 'normal' }
+                disabled={ loading }
+            >
                 <FormLabel component={ 'legend' }>Tipo:</FormLabel>
                 <RadioGroup
                     name={ 'type' }

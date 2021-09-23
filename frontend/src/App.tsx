@@ -4,18 +4,21 @@ import { Breadcrumbs, Navbar } from "./components";
 import { BrowserRouter } from "react-router-dom";
 import { AppRouter } from "./routes/AppRouter";
 import { theme } from "./config/theme";
+import { SnackbarProvider } from "./components/SnackbarProvider";
 
 function App() {
     return (
         <MuiThemeProvider theme={ theme }>
-            <CssBaseline />
-            <BrowserRouter>
-                <Navbar />
-                <Box paddingTop={ '70px' }>
-                    <Breadcrumbs />
-                    <AppRouter />
-                </Box>
-            </BrowserRouter>
+            <SnackbarProvider>
+                <CssBaseline />
+                <BrowserRouter>
+                    <Navbar />
+                    <Box paddingTop={ '70px' }>
+                        <Breadcrumbs />
+                        <AppRouter />
+                    </Box>
+                </BrowserRouter>
+            </SnackbarProvider>
         </MuiThemeProvider>
     );
 }

@@ -13,8 +13,10 @@ export type RouteNames = 'dashboard'
     | 'categories.edit'
     | 'members.list'
     | 'members.create'
+    | 'members.edit'
     | 'genres.list'
-    | 'genres.create';
+    | 'genres.create'
+    | 'genres.edit';
 
 export interface RouteProps extends DOMRouteProps {
     label: string
@@ -57,6 +59,12 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
         component: CreateCastMember,
         exact: true
     } ],
+    [ 'members.edit', {
+        label: 'Editar membro',
+        path: '/membros-elencos/:id/editar',
+        component: CreateCastMember,
+        exact: true
+    } ],
     [ 'genres.list', {
         label: 'Gêneros',
         path: '/generos',
@@ -66,6 +74,12 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
     [ 'genres.create', {
         label: 'Criar Gênero',
         path: '/generos/criar',
+        component: CreateGenre,
+        exact: true
+    } ],
+    [ 'genres.edit', {
+        label: 'Criar Gênero',
+        path: '/generos/:id/editar',
         component: CreateGenre,
         exact: true
     } ],

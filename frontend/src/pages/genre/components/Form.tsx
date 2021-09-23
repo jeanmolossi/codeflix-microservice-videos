@@ -9,13 +9,21 @@ import {
     MenuItem,
     TextField
 } from "@material-ui/core";
-import { useForm } from "react-hook-form";
-import { Genre, genreHttp } from "../../../util/http/genre-http";
-import { Category, categoryHttp } from "../../../util/http/category-http";
+import { FieldError, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup';
+import { Genre, genreHttp } from "../../../util/http/genre-http";
+import { Category, categoryHttp } from "../../../util/http/category-http";
 
-type FormFields = Omit<Genre, 'id'>;
+type FormFields = Omit<Genre, 'id' | 'categories'>;
+
+const validationSchema = yup.object().shape({
+    name: yup.string().label("Nome").required(),
+    is_active: yup.boolean().label("Ativo"),
+    categories_id: yup.array(yup.string()).min(1).label("Categorias").required()
+}) as yup.SchemaOf<FormFields> | any;
 
 const useStyles = makeStyles(theme => ({
     submit: {
@@ -40,15 +48,18 @@ export const Form = () => {
         disabled: loading,
     }
 
-
     const {
         register,
         handleSubmit,
         getValues,
         setValue,
         watch,
-        reset
+        reset,
+        setError,
+        formState: { errors }
     } = useForm<FormFields>({
+        context: validationSchema,
+        resolver: yupResolver(validationSchema),
         defaultValues: {
             is_active: true,
             categories_id: []
@@ -67,7 +78,7 @@ export const Form = () => {
         history.push('/generos')
     }, [ history ]);
 
-    const onSubmit = useCallback((formData: FormFields, e: BaseSyntheticEvent | undefined) => {
+    const onSubmit = useCallback((formData: FormFields, e?: BaseSyntheticEvent) => {
         const http = genre.id
             ? genreHttp.update(genre.id, formData)
             : genreHttp.create(formData);
@@ -97,7 +108,8 @@ export const Form = () => {
             'categories_id',
             e.target.value as any
         )
-    }, [ setValue ]);
+        setError('categories_id', {})
+    }, [ setValue, setError ]);
 
     useEffect(() => {
         register('categories_id')
@@ -141,6 +153,8 @@ export const Form = () => {
                     shrink: true
                 } }
                 disabled={ loading }
+                helperText={ errors.name?.message }
+                error={ !!errors.name?.message }
             />
 
             <TextField
@@ -152,12 +166,16 @@ export const Form = () => {
                 variant={ 'outlined' }
                 placeholder={ 'Selecione categorias' }
                 fullWidth
-                SelectProps={ { multiple: true } }
+                SelectProps={ {
+                    multiple: true,
+                } }
                 onChange={ onChange }
                 disabled={ loading }
                 InputLabelProps={ {
                     shrink: true
                 } }
+                helperText={ (errors.categories_id as FieldError | undefined)?.message }
+                error={ !!(errors.categories_id as FieldError | undefined)?.message }
             >
                 <MenuItem value="" disabled>
                     <em>Selecione categorias</em>

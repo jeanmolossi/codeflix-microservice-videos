@@ -5,6 +5,7 @@ import {
     ButtonProps,
     FormControl,
     FormControlLabel,
+    FormHelperText,
     FormLabel,
     makeStyles,
     Radio,
@@ -12,13 +13,18 @@ import {
     TextField
 } from "@material-ui/core";
 import { useForm } from "react-hook-form";
-import { CastMember, castMemberHttp, MemberType } from "../../../util/http/cast-member-http";
 import { useHistory, useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
-
-type FormProps = {}
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup';
+import { CastMember, castMemberHttp, MemberType } from "../../../util/http/cast-member-http";
 
 type FormFields = Omit<CastMember, 'id'>;
+
+const validationSchema = yup.object().shape({
+    name: yup.string().label("Nome").required(),
+    type: yup.number().label("Tipo").required(),
+}) as yup.SchemaOf<FormFields>;
 
 const useStyles = makeStyles(theme => ({
     submit: {
@@ -26,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-export const Form = ({ ..._ }: FormProps) => {
+export const Form = () => {
     const classes = useStyles();
     const { id } = useParams<{ id?: string }>();
     const snackbar = useSnackbar();
@@ -42,7 +48,17 @@ export const Form = ({ ..._ }: FormProps) => {
         disabled: loading
     }
 
-    const { register, handleSubmit, getValues, setValue, watch, reset } = useForm<FormFields>({
+    const {
+        register,
+        handleSubmit,
+        getValues,
+        setValue,
+        watch,
+        reset,
+        formState: { errors }
+    } = useForm<FormFields>({
+        context: validationSchema,
+        resolver: yupResolver(validationSchema),
         defaultValues: { type: MemberType.Actor }
     });
 
@@ -114,6 +130,8 @@ export const Form = ({ ..._ }: FormProps) => {
                 InputLabelProps={ {
                     shrink: true
                 } }
+                helperText={ errors.name?.message }
+                error={ !!errors.name?.message }
                 disabled={ loading }
             />
 
@@ -138,6 +156,8 @@ export const Form = ({ ..._ }: FormProps) => {
                         value={ MemberType.Director }
                     />
                 </RadioGroup>
+                { errors.type?.message &&
+                (<FormHelperText error={ !!errors.type?.message }>{ errors.type.message }</FormHelperText>) }
             </FormControl>
 
             <Box dir={ 'rtl' }>

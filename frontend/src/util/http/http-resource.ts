@@ -1,5 +1,5 @@
-import {AxiosInstance} from 'axios';
-import {DataResource, DataResponse} from "../../core/http-models";
+import { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { DataResource, DataResponse } from "../../core/http-models";
 
 export class HttpResource<T = any, ID = string> {
 
@@ -7,7 +7,10 @@ export class HttpResource<T = any, ID = string> {
     }
 
     list(): Promise<DataResponse<T[]>> {
-        return this.http.get<DataResource<T[]>>(this.resource)
+        const config: AxiosRequestConfig = {
+            params: { all: '' }
+        }
+        return this.http.get<DataResource<T[]>>(this.resource, config)
     }
 
     get(id: ID): Promise<DataResponse<T>> {

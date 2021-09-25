@@ -115,3 +115,16 @@ const defaultOptions: MUIDataTableOptions = {
         },
     }
 }
+
+export function makeActionStyles(column: number): (theme: Theme) => Theme {
+    return (theme: Theme) => {
+        const copyTheme = cloneDeep(theme);
+        const selector = `&[data-testid^="MuiDataTableBodyCell-${ column }"]`;
+        (copyTheme.overrides as any).MUIDataTableBodyCell.root[selector] = {
+            paddingTop: 0,
+            paddingBottom: 0
+        }
+
+        return copyTheme
+    }
+}

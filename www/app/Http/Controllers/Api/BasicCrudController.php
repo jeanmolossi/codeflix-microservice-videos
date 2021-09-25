@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
+use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -11,12 +13,21 @@ use ReflectionClass;
 
 abstract class BasicCrudController extends Controller {
 
-    protected $paginationSize = 15;
+    protected $perPage = 15;
 
-    public function index() {
-        $data = !$this->paginationSize
-            ? $this->model()::all()
-            : $this->model()::paginate($this->paginationSize);
+    public function index(Request $request) {
+        $perPage = (int)$request->get('per_page', $this->perPage);
+        $hasFilter = in_array(Filterable::class, class_uses($this->model()));
+
+        $query = $this->queryBuilder();
+
+        if ($hasFilter) {
+            $query = $query->filter($request->all());
+        }
+
+        $data = $request->has('all') || !$this->perPage
+            ? $query->get()
+            : $query->paginate($perPage);
 
         $resourceCollection = $this->resourceCollection();
 
@@ -37,7 +48,7 @@ abstract class BasicCrudController extends Controller {
     public function store(Request $request) {
         $validatedData = $this->validate($request, $this->rulesStore());
 
-        $obj = $this->model()::create($validatedData);
+        $obj = $this->queryBuilder()->create($validatedData);
         $obj->refresh();
 
         $resource = $this->resource();
@@ -58,7 +69,7 @@ abstract class BasicCrudController extends Controller {
         $model = $this->model();
         $keyName = (new $model)->getRouteKeyName();
 
-        return $this->model()::where($keyName, $id)->firstOrFail();
+        return $this->queryBuilder()->where($keyName, $id)->firstOrFail();
     }
 
     /**
@@ -83,6 +94,10 @@ abstract class BasicCrudController extends Controller {
         $obj->delete();
 
         return response()->noContent();
+    }
+
+    protected function queryBuilder(): Builder {
+        return $this->model()::query();
     }
 
 }

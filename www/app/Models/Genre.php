@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\ModelFilters\CastMemberFilter;
 use App\Models\Traits\Uuid;
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,7 +14,8 @@ class Genre extends Model
 {
     use HasFactory,
         SoftDeletes,
-        Uuid;
+        Uuid,
+        Filterable;
 
     protected $fillable = [
         'name',
@@ -30,5 +33,9 @@ class Genre extends Model
 
     public function categories(): BelongsToMany {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function modelFilter(): ?string {
+        return $this->provideFilter(CastMemberFilter::class);
     }
 }

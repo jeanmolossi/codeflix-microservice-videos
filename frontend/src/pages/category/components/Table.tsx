@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import MUIDataTable, { MUIDataTableColumn } from "mui-datatables";
-import { format, parseISO } from 'date-fns';
+import React, {useEffect, useState} from 'react';
+import MUIDataTable, {MUIDataTableColumn} from "mui-datatables";
+import {format, parseISO} from 'date-fns';
 
-import { Category, categoryHttp } from "../../../util/http/category-http";
-import { BadgeNo, BadgeYes } from "../../../components";
+import {categoryHttp} from "../../../util/http/category-http";
+import {BadgeNo, BadgeYes} from "../../../components";
+import {Category} from "../../../core/models";
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {

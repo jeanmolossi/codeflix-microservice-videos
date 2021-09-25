@@ -1,7 +1,5 @@
-import { AxiosInstance, AxiosResponse } from 'axios';
-
-type DataResource<T> = { data: T };
-type DataResponse<T> = AxiosResponse<DataResource<T>>;
+import {AxiosInstance} from 'axios';
+import {DataResource, DataResponse} from "../../core/http-models";
 
 export class HttpResource<T = any, ID = string> {
 

@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, {BaseSyntheticEvent, ChangeEvent, useCallback, useEffect, useState} from 'react';
 import {
     Box,
     Button,
@@ -12,12 +12,13 @@ import {
     RadioGroup,
     TextField
 } from "@material-ui/core";
-import { useForm } from "react-hook-form";
-import { useHistory, useParams } from "react-router-dom";
-import { useSnackbar } from "notistack";
-import { yupResolver } from '@hookform/resolvers/yup'
+import {useForm} from "react-hook-form";
+import {useHistory, useParams} from "react-router-dom";
+import {useSnackbar} from "notistack";
+import {yupResolver} from '@hookform/resolvers/yup'
 import * as yup from 'yup';
-import { CastMember, castMemberHttp, MemberType } from "../../../util/http/cast-member-http";
+import {castMemberHttp, MemberType} from "../../../util/http/cast-member-http";
+import {CastMember} from '../../../core/models'
 
 type FormFields = Omit<CastMember, 'id'>;
 

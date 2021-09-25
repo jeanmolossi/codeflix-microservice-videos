@@ -1,21 +1,14 @@
-import React, { BaseSyntheticEvent, ChangeEvent, useCallback, useEffect, useState } from 'react';
-import {
-    Box,
-    Button,
-    ButtonProps,
-    Checkbox,
-    FormControlLabel,
-    makeStyles,
-    MenuItem,
-    TextField
-} from "@material-ui/core";
-import { FieldError, useForm } from "react-hook-form";
-import { useHistory, useParams } from "react-router-dom";
-import { useSnackbar } from "notistack";
-import { yupResolver } from '@hookform/resolvers/yup'
+import React, {BaseSyntheticEvent, ChangeEvent, useCallback, useEffect, useState} from 'react';
+import {Box, Button, ButtonProps, Checkbox, FormControlLabel, makeStyles, MenuItem, TextField} from "@material-ui/core";
+import {FieldError, useForm} from "react-hook-form";
+import {useHistory, useParams} from "react-router-dom";
+import {useSnackbar} from "notistack";
+import {yupResolver} from '@hookform/resolvers/yup'
 import * as yup from 'yup';
-import { Genre, genreHttp } from "../../../util/http/genre-http";
-import { Category, categoryHttp } from "../../../util/http/category-http";
+import {genreHttp} from "../../../util/http/genre-http";
+import {categoryHttp} from "../../../util/http/category-http";
+import {Category, Genre} from '../../../core/models';
+import {DataResponse} from "../../../core/http-models";
 
 type FormFields = Omit<Genre, 'id' | 'categories'>;
 

@@ -1,19 +1,16 @@
-import React, { BaseSyntheticEvent, useCallback, useEffect, useState } from 'react';
-import { Box, Button, ButtonProps, Checkbox, FormControlLabel, makeStyles, TextField } from "@material-ui/core";
-import { useForm } from "react-hook-form";
-import { Category, categoryHttp } from "../../../util/http/category-http";
-import { yupResolver } from '@hookform/resolvers/yup';
+import React, {BaseSyntheticEvent, useCallback, useEffect, useState} from 'react';
+import {Checkbox, FormControlLabel, TextField} from "@material-ui/core";
+import {useForm} from "react-hook-form";
+import {categoryHttp} from "../../../util/http/category-http";
+import {Category} from '../../../core/models'
+import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from '../../../config/yup';
-import { useHistory, useParams } from "react-router-dom";
-import { useSnackbar } from "notistack";
+import {useHistory, useParams} from "react-router-dom";
+import {useSnackbar} from "notistack";
+import {SubmitActions} from "../../../components";
 
 type FormFields = Omit<Category, 'id'>;
 
-const useStyles = makeStyles(theme => ({
-    submit: {
-        marginRight: theme.spacing(1)
-    }
-}))
 
 const validationSchema = yup.object().shape({
     name: yup.string().label('Nome').required(),

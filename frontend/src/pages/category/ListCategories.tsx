@@ -14,6 +14,7 @@ export const ListCategories = () => {
                     size={ 'small' }
                     component={ Link }
                     to={ '/categorias/criar' }
+                    color={ 'secondary' }
                 >
                     <Add />
                 </Fab>

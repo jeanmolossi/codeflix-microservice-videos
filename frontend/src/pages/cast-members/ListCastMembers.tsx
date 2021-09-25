@@ -15,6 +15,7 @@ export const ListCastMembers = () => {
                     size={ 'small' }
                     component={ Link }
                     to={ '/membros-elencos/criar' }
+                    color={ 'secondary' }
                 >
                     <Add />
                 </Fab>

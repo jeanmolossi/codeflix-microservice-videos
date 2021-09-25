@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Chip } from '@material-ui/core';
-import MUIDataTable, { MUIDataTableColumn } from "mui-datatables";
-import { format, parseISO } from 'date-fns';
+import React, {useEffect, useState} from 'react';
+import MUIDataTable, {MUIDataTableColumn} from "mui-datatables";
+import {format, parseISO} from 'date-fns';
 
-import { httpVideo } from "../../../util/http";
+import {categoryHttp} from "../../../util/http/category-http";
+import {BadgeNo, BadgeYes} from "../../../components";
+import {Category} from "../../../core/models";
 
 const columnsDefinition: MUIDataTableColumn[] = [
     {
@@ -16,8 +17,8 @@ const columnsDefinition: MUIDataTableColumn[] = [
         options: {
             customBodyRender: (value) => {
                 return value
-                    ? <Chip label={ 'Sim' } color={ 'primary' } />
-                    : <Chip label={ 'Nao' } color={ 'secondary' } />;
+                    ? <BadgeYes />
+                    : <BadgeNo />;
             }
         }
     },
@@ -33,10 +34,13 @@ const columnsDefinition: MUIDataTableColumn[] = [
 ];
 
 export const Table = () => {
-    const [ data, setData ] = useState([]);
+    const [ data, setData ] = useState<Category[]>([]);
 
     useEffect(() => {
-        httpVideo.get('/categories').then(({ data }) => setData(data.data))
+        categoryHttp.list()
+            .then((response) =>
+                setData(response.data.data)
+            )
     }, []);
 
     return (

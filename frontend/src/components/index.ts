@@ -1,3 +1,6 @@
 export * from './Page'
 export * from './Navbar'
 export * from './Navbar/Menu'
+export * from './Badge'
+export * from './Breadcrumbs'
+export * from './SubmitActions'

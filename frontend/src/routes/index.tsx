@@ -1,16 +1,22 @@
 import { RouteProps as DOMRouteProps } from 'react-router-dom';
 import { Dashboard } from "../pages/Dashboard";
 import { ListCategories } from "../pages/category/ListCategories";
+import { CreateCategory } from "../pages/category/CreateCategory";
 import { ListCastMembers } from "../pages/cast-members/ListCastMembers";
 import { ListGenres } from "../pages/genre/ListGenres";
+import { CreateCastMember } from "../pages/cast-members/CreateCastMember";
+import { CreateGenre } from "../pages/genre/CreateGenre";
 
 export type RouteNames = 'dashboard'
     | 'categories.list'
     | 'categories.create'
+    | 'categories.edit'
     | 'members.list'
     | 'members.create'
+    | 'members.edit'
     | 'genres.list'
-    | 'genres.create';
+    | 'genres.create'
+    | 'genres.edit';
 
 export interface RouteProps extends DOMRouteProps {
     label: string
@@ -24,7 +30,7 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
         exact: true
     } ],
     [ 'categories.list', {
-        label: 'Listar categorias',
+        label: 'Categorias',
         path: '/categorias',
         component: ListCategories,
         exact: true
@@ -32,31 +38,49 @@ export const routes: Map<RouteNames, RouteProps> = new Map([
     [ 'categories.create', {
         label: 'Criar categorias',
         path: '/categorias/criar',
-        component: ListCategories,
+        component: CreateCategory,
+        exact: true
+    } ],
+    [ 'categories.edit', {
+        label: 'Editar categoria',
+        path: '/categorias/:id/editar',
+        component: CreateCategory,
         exact: true
     } ],
     [ 'members.list', {
-        label: 'Listagem de membros de elencos',
+        label: 'Membros de elencos',
         path: '/membros-elencos',
         component: ListCastMembers,
         exact: true
     } ],
     [ 'members.create', {
-        label: 'Criar categorias',
+        label: 'Criar membro',
         path: '/membros-elencos/criar',
-        component: () => <h1>Criar membro</h1>,
+        component: CreateCastMember,
+        exact: true
+    } ],
+    [ 'members.edit', {
+        label: 'Editar membro',
+        path: '/membros-elencos/:id/editar',
+        component: CreateCastMember,
         exact: true
     } ],
     [ 'genres.list', {
-        label: 'Listagem de generos',
+        label: 'Gêneros',
         path: '/generos',
         component: ListGenres,
         exact: true
     } ],
     [ 'genres.create', {
-        label: 'Criar Genero',
+        label: 'Criar Gênero',
         path: '/generos/criar',
-        component: () => <h1>Criar membro</h1>,
+        component: CreateGenre,
+        exact: true
+    } ],
+    [ 'genres.edit', {
+        label: 'Criar Gênero',
+        path: '/generos/:id/editar',
+        component: CreateGenre,
         exact: true
     } ],
 ]);

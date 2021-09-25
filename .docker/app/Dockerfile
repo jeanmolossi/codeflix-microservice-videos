@@ -11,6 +11,7 @@ RUN apk add --no-cache shadow \
     libjpeg-turbo-dev \
     libpng-dev
 
+RUN npm install -g yarn
 RUN docker-php-ext-install pdo pdo_mysql
 RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
 RUN docker-php-ext-install -j$(nproc) gd

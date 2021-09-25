@@ -1,5 +1,6 @@
 export * from './Navbar'
 export * from './Navbar/Menu'
+export * from './Table'
 export * from './Badge'
 export * from './Breadcrumbs'
 export * from './DefaultForm'

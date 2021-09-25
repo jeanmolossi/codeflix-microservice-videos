@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import MUIDataTable, { MUIDataTableColumn } from "mui-datatables";
 import { format, parseISO } from 'date-fns';
-
-import { httpVideo } from "../../../util/http";
+import { Table as MyTable, TableColumn } from '../../../components';
+import { castMemberHttp } from "../../../util/http/cast-member-http";
+import { CastMember } from "../../../core/models";
+import { useSnackbar } from "notistack";
 
 const castMemberTypes = new Map<number, string>(
     [
@@ -11,7 +12,7 @@ const castMemberTypes = new Map<number, string>(
     ]
 );
 
-const columnsDefinition: MUIDataTableColumn[] = [
+const columnsDefinition: TableColumn[] = [
     {
         name: "name",
         label: "Nome"
@@ -37,18 +38,30 @@ const columnsDefinition: MUIDataTableColumn[] = [
 ];
 
 export const Table = () => {
-    const [ data, setData ] = useState([]);
+    const snackbar = useSnackbar();
+    const [ loading, setLoading ] = useState(false);
+    const [ data, setData ] = useState([] as CastMember[]);
 
     useEffect(() => {
-        httpVideo.get('/cast_members').then(({ data }) => setData(data.data))
-    }, []);
+        setLoading(true)
+        castMemberHttp.list()
+            .then(({ data }) => setData(data.data))
+            .catch((err) => {
+                snackbar.enqueueSnackbar(
+                    err.message,
+                    { variant: "error" }
+                );
+            })
+            .finally(() => setLoading(false))
+    }, [ snackbar ]);
 
     return (
         <div>
-            <MUIDataTable
+            <MyTable
                 columns={ columnsDefinition }
                 data={ data }
                 title={ 'Listagem de membros de elencos' }
+                isLoading={ loading }
             />
         </div>
     );

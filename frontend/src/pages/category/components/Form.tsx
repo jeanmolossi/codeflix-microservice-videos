@@ -19,22 +19,24 @@ const validationSchema = yup.object().shape({
 }) as yup.SchemaOf<FormFields>;
 
 export const Form = () => {
-    const classes = useStyles();
-    const { id } = useParams<{ id?: string }>();
+
+    const {id} = useParams<{ id?: string }>();
     const history = useHistory();
     const snackbar = useSnackbar();
 
-    const [ category, setCategory ] = useState<Category>({} as Category);
-    const [ loading, setLoading ] = useState(false);
+    const [category, setCategory] = useState<Category>({} as Category);
+    const [loading, setLoading] = useState(false);
 
-    const buttonProps: ButtonProps = {
-        className: classes.submit,
-        variant: 'contained',
-        color: 'secondary',
-        disabled: loading,
-    }
 
-    const { register, handleSubmit, getValues, watch, reset, formState: { errors } } = useForm<FormFields>({
+    const {
+        register,
+        handleSubmit,
+        getValues,
+        watch,
+        reset,
+        formState: {errors},
+        trigger
+    } = useForm<FormFields>({
         context: validationSchema,
         resolver: yupResolver(validationSchema),
         defaultValues: {
@@ -79,8 +81,14 @@ export const Form = () => {
     }, [ category, id, saveButtonsBehavior, snackbar ]);
 
     const onSubmitOnly = useCallback(
-        () => onSubmit(getValues(), undefined),
-        [ onSubmit, getValues ]
+        () => {
+            trigger().then(isValid => {
+                if (isValid) {
+                    onSubmit(getValues(), undefined)
+                }
+            })
+        },
+        [onSubmit, getValues, trigger]
     )
 
     useEffect(() => {
@@ -146,10 +154,7 @@ export const Form = () => {
                 labelPlacement={ 'end' }
             />
 
-            <Box dir={ 'rtl' }>
-                <Button { ...buttonProps } onClick={ onSubmitOnly }>Salvar</Button>
-                <Button { ...buttonProps } type={ 'submit' }>Salvar e continuar editando</Button>
-            </Box>
+            <SubmitActions disabled={loading} handleSubmit={onSubmitOnly}/>
         </form>
     )
 }

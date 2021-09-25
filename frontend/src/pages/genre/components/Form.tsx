@@ -10,7 +10,7 @@ import {categoryHttp} from "../../../util/http/category-http";
 import {Category, Genre} from '../../../core/models';
 import {DataResponse} from "../../../core/http-models";
 
-type FormFields = Omit<Genre, 'id' | 'categories'>;
+type FormFields = Omit<Genre, 'id' | 'categories' | 'created_at' | 'updated_at' | 'deleted_at'>;
 
 const validationSchema = yup.object().shape({
     name: yup.string().label("Nome").required(),

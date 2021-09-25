@@ -9,7 +9,7 @@ import {useHistory, useParams} from "react-router-dom";
 import {useSnackbar} from "notistack";
 import {SubmitActions} from "../../../components";
 
-type FormFields = Omit<Category, 'id'>;
+type FormFields = Omit<Category, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>;
 
 
 const validationSchema = yup.object().shape({

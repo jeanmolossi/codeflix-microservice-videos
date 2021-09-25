@@ -20,7 +20,7 @@ import * as yup from 'yup';
 import {castMemberHttp, MemberType} from "../../../util/http/cast-member-http";
 import {CastMember} from '../../../core/models'
 
-type FormFields = Omit<CastMember, 'id'>;
+type FormFields = Omit<CastMember, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>;
 
 const validationSchema = yup.object().shape({
     name: yup.string().label("Nome").required(),

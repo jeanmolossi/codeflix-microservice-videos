@@ -88,11 +88,11 @@ export const Form = () => {
             .catch((err) => {
                 snackbar.enqueueSnackbar(
                     err.message,
-                    { variant: "error" }
+                    {variant: "error"}
                 )
             })
             .finally(() => setLoading(false))
-    }, [ genre.id, saveButtonsBehavior, id, snackbar ]);
+    }, [genre?.id, saveButtonsBehavior, id, snackbar]);
 
     const onSubmitOnly = () => onSubmit(getValues(), undefined)
 
@@ -109,28 +109,45 @@ export const Form = () => {
     }, [ register ]);
 
     useEffect(() => {
-        categoryHttp.list()
-            .then(response => setCategories(response.data.data))
-    }, []);
+        (async function loadData() {
+            setLoading(true)
+            const promises: Promise<unknown>[] = [categoryHttp.list()];
 
-    useEffect(() => {
-        if (id) {
-            genreHttp.get(id)
-                .then(({ data }) => {
-                    setGenre(data.data)
+            if (id) {
+                promises.push(genreHttp.get(id));
+            }
 
-                    const { categories } = data.data!;
-                    delete data.data.categories;
+            try {
+                const [
+                    {data: {data: categoryList}},
+                    genreDataResponse
+                ] = await Promise.all(promises) as [DataResponse<Category[]>, DataResponse<Genre>];
 
-                    const resetData = {
-                        ...data.data,
-                        categories_id: categories?.map(c => c.id)
-                    }
+                let genreResponse = {} as Genre;
+                if (genreDataResponse?.data.data) {
+                    genreResponse = genreDataResponse.data.data
+                }
 
-                    reset(resetData)
+                setCategories(categoryList)
+                setGenre(genreResponse)
+
+                const categories_id = genreResponse.categories?.map(c => c.id) || [];
+                delete genreResponse.categories
+
+                reset({
+                    ...genreResponse,
+                    categories_id
                 })
-        }
-    }, [ id, reset ])
+            } catch (error) {
+                snackbar.enqueueSnackbar(
+                    'Nao foi possível carregar as informacoes',
+                    {variant: "error"}
+                )
+            } finally {
+                setLoading(false);
+            }
+        })()
+    }, [id, reset, snackbar])
 
     return (
         <form onSubmit={ handleSubmit(onSubmit) }>
